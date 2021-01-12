@@ -1938,7 +1938,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1948,58 +1947,33 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      contacts: [{
-        id: 1,
-        name: 'Javox',
-        avatar: 'https://ptetutorials.com/images/user-profile.png',
-        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
-        last_mes_date: '25.12.2020'
-      }, {
-        id: 2,
-        name: 'Khan',
-        avatar: 'https://ptetutorials.com/images/user-profile.png',
-        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
-        last_mes_date: '25.12.2020'
-      }, {
-        id: 3,
-        name: 'Bek',
-        avatar: 'https://ptetutorials.com/images/user-profile.png',
-        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
-        last_mes_date: '9.01.2021'
-      }, {
-        id: 4,
-        name: 'Samandar',
-        avatar: 'https://ptetutorials.com/images/user-profile.png',
-        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
-        last_mes_date: '25.12.2020'
-      }],
-      messages: [{
-        id: 1,
-        txt: 'We work directly with our designers and suppliers',
-        date: '09-01-2021 19:00',
-        incoming: false
-      }, {
-        id: 2,
-        txt: 'We work directly with our designers and suppliers',
-        date: '09-01-2021 19:00',
-        incoming: true,
-        avatar: 'https://ptetutorials.com/images/user-profile.png'
-      }, {
-        id: 4,
-        txt: 'We work directly with our designers and suppliers',
-        date: '09-01-2021 19:00',
-        incoming: false
-      }, {
-        id: 3,
-        txt: 'We work directly with our designers and suppliers',
-        date: '09-01-2021 19:00',
-        incoming: true,
-        avatar: 'https://ptetutorials.com/images/user-profile.png'
-      }]
+      txt: '',
+      messages: []
     };
   },
   mounted: function mounted() {
-    console.log('Component mounted.');
+    var _this = this;
+
+    axios.get('/api/messages').then(function (res) {
+      _this.messages = res.data.messages;
+    });
+    window.Echo.channel('messages').listen('MessageCreatedEvent', function (e) {
+      _this.messages.push(e.msg);
+    });
+  },
+  methods: {
+    storeMsg: function storeMsg() {
+      var _this2 = this;
+
+      var vm = this;
+      axios.post('/api/messages', {
+        txt: vm.txt
+      }).then(function (res) {
+        _this2.messages.push(res.data.msg);
+
+        _this2.txt = '';
+      });
+    }
   }
 });
 
@@ -2085,7 +2059,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['message'],
   data: function data() {
     return {
-      format: 'DD.MM.YYYY HH:mm'
+      format: 'DD.MM.YYYY HH:mm:ss'
     };
   }
 });
@@ -2138,7 +2112,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 
 
@@ -2148,7 +2121,36 @@ __webpack_require__.r(__webpack_exports__);
     OMessage: _include_outgoing_message__WEBPACK_IMPORTED_MODULE_0__["default"],
     IMessage: _include_incoming_message__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  props: ['messages']
+  props: ['messages'],
+  data: function data() {
+    return {
+      contacts: [{
+        id: 1,
+        name: 'Javox',
+        avatar: 'https://ptetutorials.com/images/user-profile.png',
+        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
+        last_mes_date: '25.12.2020'
+      }, {
+        id: 2,
+        name: 'Khan',
+        avatar: 'https://ptetutorials.com/images/user-profile.png',
+        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
+        last_mes_date: '25.12.2020'
+      }, {
+        id: 3,
+        name: 'Bek',
+        avatar: 'https://ptetutorials.com/images/user-profile.png',
+        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
+        last_mes_date: '9.01.2021'
+      }, {
+        id: 4,
+        name: 'Samandar',
+        avatar: 'https://ptetutorials.com/images/user-profile.png',
+        last_mes: 'Test, which is a new approach to have all solutions astrology under one roof',
+        last_mes_date: '25.12.2020'
+      }]
+    };
+  }
 });
 
 /***/ }),
@@ -65435,73 +65437,51 @@ var render = function() {
     _c("div", { staticClass: "inbox_msg" }, [
       _c(
         "div",
-        { staticClass: "inbox_people" },
-        [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("contacts", { attrs: { contacts: _vm.contacts } })
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
         { staticClass: "mesgs" },
         [
           _c("messages", { attrs: { messages: _vm.messages } }),
           _vm._v(" "),
-          _vm._m(1)
+          _c("div", { staticClass: "type_msg" }, [
+            _c("div", { staticClass: "input_msg_write" }, [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.txt,
+                    expression: "txt"
+                  }
+                ],
+                staticClass: "write_msg",
+                attrs: { type: "text", placeholder: "Type a message" },
+                domProps: { value: _vm.txt },
+                on: {
+                  keyup: function($event) {
+                    if (
+                      !$event.type.indexOf("key") &&
+                      _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                    ) {
+                      return null
+                    }
+                    return _vm.storeMsg($event)
+                  },
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.txt = $event.target.value
+                  }
+                }
+              })
+            ])
+          ])
         ],
         1
       )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "headind_srch" }, [
-      _c("div", { staticClass: "recent_heading" }, [
-        _c("h4", [_vm._v("Recent")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "srch_bar" }, [
-        _c("div", { staticClass: "stylish-input-group" }, [
-          _c("input", {
-            staticClass: "search-bar",
-            attrs: { type: "text", placeholder: "Search" }
-          })
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "type_msg" }, [
-      _c("div", { staticClass: "input_msg_write" }, [
-        _c("input", {
-          staticClass: "write_msg",
-          attrs: { type: "text", placeholder: "Type a message" }
-        }),
-        _vm._v(" "),
-        _c(
-          "button",
-          { staticClass: "msg_send_btn", attrs: { type: "button" } },
-          [
-            _c("i", {
-              staticClass: "fa fa-paper-plane",
-              attrs: { "aria-hidden": "true" }
-            })
-          ]
-        )
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -65616,7 +65596,7 @@ var render = function() {
         _c("span", { staticClass: "time_date" }, [
           _vm._v(
             " " +
-              _vm._s(_vm.moment(_vm.message.date, _vm.format).format("DD MMM"))
+              _vm._s(_vm.moment(_vm.message.created_at).format("DD MMM HH:mm"))
           )
         ])
       ])
@@ -65685,11 +65665,7 @@ var render = function() {
     { staticClass: "msg_history" },
     [
       _vm._l(_vm.messages, function(message) {
-        return [
-          message.incoming === false
-            ? _c("o-message", { attrs: { message: message } })
-            : _c("incoming-message", { attrs: { message: message } })
-        ]
+        return [_c("incoming-message", { attrs: { message: message } })]
       })
     ],
     2

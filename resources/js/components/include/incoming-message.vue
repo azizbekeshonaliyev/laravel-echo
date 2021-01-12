@@ -4,7 +4,7 @@
         <div class="received_msg">
             <div class="received_withd_msg">
                 <p>{{  message.txt }}</p>
-                <span class="time_date"> {{ moment(message.date,format).format('DD MMM')}}</span>
+                <span class="time_date"> {{ moment(message.created_at).format('DD MMM HH:mm')}}</span>
             </div>
         </div>
     </div>
@@ -14,7 +14,7 @@ export default {
     props:['message'],
     data(){
         return {
-            format: 'DD.MM.YYYY HH:mm'
+            format: 'DD.MM.YYYY HH:mm:ss'
         }
     }
 }
